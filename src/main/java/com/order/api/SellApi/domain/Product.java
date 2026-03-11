@@ -1,22 +1,24 @@
 package com.order.api.SellApi.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="tb_product")
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String tittle;
+    private String title;
     @Column(nullable = false)
     private Double price;
     @Column(nullable = false, length = 1000)
@@ -24,8 +26,19 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
     private String imagePath;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
     @Column(nullable = false)
-    private Timestamp created_at;
-    @Column(nullable = false)
-    private Timestamp update_at;
+    private LocalDateTime updatedAt;
+    private Long idProductApi;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
